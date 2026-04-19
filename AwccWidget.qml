@@ -207,8 +207,12 @@ PluginComponent {
             Rectangle {
                 width: sliderControl.visualPosition * parent.width
                 height: parent.height
-                color: Theme.primary
                 radius: 2
+                gradient: Gradient {
+                    orientation: Gradient.Horizontal
+                    GradientStop { position: 0.0; color: Theme.primary }
+                    GradientStop { position: 1.0; color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.5) }
+                }
             }
         }
 
@@ -218,7 +222,7 @@ PluginComponent {
             implicitWidth: 20
             implicitHeight: 20
             radius: 10
-            color: sliderControl.pressed ? Qt.darker(Theme.primary, 1.1) : Theme.primary
+            color: "white"
             border.color: Theme.primary
             border.width: 2
         }
@@ -402,6 +406,54 @@ PluginComponent {
                 width: parent.width - Theme.spacingM * 2
                 spacing: Theme.spacingM
 
+                // ── HEADER CARD ───────────────────────────────────────────────
+
+                Rectangle {
+                    width: parent.width
+                    height: 56
+                    radius: Theme.cornerRadius
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.15) }
+                        GradientStop { position: 1.0; color: Qt.rgba(Theme.secondary.r, Theme.secondary.g, Theme.secondary.b, 0.08) }
+                    }
+                    border.width: 1
+                    border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.15)
+
+                    Row {
+                        anchors { left: parent.left; verticalCenter: parent.verticalCenter; leftMargin: Theme.spacingM }
+                        spacing: Theme.spacingM
+
+                        Rectangle {
+                            width: 36; height: 36; radius: 10
+                            color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.18)
+                            anchors.verticalCenter: parent.verticalCenter
+                            DankIcon { name: "bolt"; size: 20; color: Theme.primary; anchors.centerIn: parent }
+                        }
+
+                        Column {
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 3
+                            StyledText { text: "Alienware Control"; font.pixelSize: Theme.fontSizeMedium; font.weight: Font.Bold }
+                            Rectangle {
+                                height: 18
+                                width: headerModeLabel.implicitWidth + Theme.spacingS * 2
+                                radius: 9
+                                color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.18)
+                                border.width: 1
+                                border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.35)
+                                StyledText {
+                                    id: headerModeLabel
+                                    anchors.centerIn: parent
+                                    text: root.currentMode
+                                    font.pixelSize: Theme.fontSizeSmall
+                                    font.weight: Font.Bold
+                                    color: Theme.primary
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // ── THERMAL MODE ──────────────────────────────────────────────
 
                 Column {
@@ -412,12 +464,13 @@ PluginComponent {
 
                     Row {
                         spacing: Theme.spacingS
+                        Rectangle { width: 4; height: 20; radius: 2; color: Theme.primary; anchors.verticalCenter: parent.verticalCenter }
                         DankIcon { name: "bolt"; size: 16; color: Theme.primary; anchors.verticalCenter: parent.verticalCenter }
                         StyledText {
                             text: "THERMAL MODE"
                             font.pixelSize: Theme.fontSizeSmall
                             font.weight: Font.Bold
-                            color: Theme.surfaceVariantText
+                            color: Theme.surfaceText
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
@@ -447,9 +500,13 @@ PluginComponent {
 
                                         readonly property bool active: root.currentMode.toLowerCase() === modelData.label.toLowerCase()
 
-                                        color: active ? Theme.primary
+                                        scale: modeArea.pressed ? 0.95 : 1.0
+                                        Behavior on scale { NumberAnimation { duration: 100 } }
+
+                                        color: active ? Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.18)
                                                       : modeArea.containsMouse ? Theme.surfaceContainerHigh : Theme.surfaceContainer
-                                        border.width: 0
+                                        border.width: active ? 1 : 0
+                                        border.color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.4)
 
                                         Column {
                                             anchors.centerIn: parent
@@ -458,14 +515,14 @@ PluginComponent {
                                             DankIcon {
                                                 name: modelData.icon
                                                 size: 14
-                                                color: parent.parent.active ? Theme.primaryText : Theme.surfaceVariantText
+                                                color: parent.parent.active ? Theme.primary : Theme.surfaceVariantText
                                                 anchors.horizontalCenter: parent.horizontalCenter
                                             }
 
                                             StyledText {
                                                 text: modelData.label
                                                 font.pixelSize: Theme.fontSizeSmall
-                                                color: parent.parent.active ? Theme.primaryText : Theme.surfaceText
+                                                color: parent.parent.active ? Theme.primary : Theme.surfaceText
                                                 font.weight: parent.parent.active ? Font.Bold : Font.Normal
                                                 elide: Text.ElideRight
                                                 width: modesColumn.buttonWidth - 8
@@ -485,6 +542,12 @@ PluginComponent {
                                                     if (exitCode === 0) root.currentMode = label
                                                 })
                                             }
+                                        }
+
+                                        DankRipple {
+                                            anchors.fill: parent
+                                            cornerRadius: Theme.cornerRadius
+                                            rippleColor: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.2)
                                         }
                                     }
                                 }
@@ -508,12 +571,13 @@ PluginComponent {
 
                     Row {
                         spacing: Theme.spacingS
+                        Rectangle { width: 4; height: 20; radius: 2; color: Theme.primary; anchors.verticalCenter: parent.verticalCenter }
                         DankIcon { name: "wind_power"; size: 16; color: Theme.primary; anchors.verticalCenter: parent.verticalCenter }
                         StyledText {
                             text: "FAN BOOST"
                             font.pixelSize: Theme.fontSizeSmall
                             font.weight: Font.Bold
-                            color: Theme.surfaceVariantText
+                            color: Theme.surfaceText
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
@@ -532,7 +596,7 @@ PluginComponent {
 
                         StyledSlider {
                             id: cpuBoostSlider
-                            width: parent.width - 32 - 40 - Theme.spacingS * 2
+                            width: parent.width - 32 - 48 - Theme.spacingS * 2
                             from: 1; to: 100; stepSize: 1
                             value: root.cpuBoost
                             anchors.verticalCenter: parent.verticalCenter
@@ -545,12 +609,20 @@ PluginComponent {
                             }
                         }
 
-                        StyledText {
-                            text: Math.round(cpuBoostSlider.value) + "%"
-                            width: 40
-                            font.pixelSize: Theme.fontSizeSmall
-                            color: Theme.surfaceText
+                        Rectangle {
+                            height: 18
+                            width: Math.max(42, cpuBoostVal.implicitWidth + Theme.spacingS * 2)
+                            radius: 9
+                            color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12)
                             anchors.verticalCenter: parent.verticalCenter
+                            StyledText {
+                                id: cpuBoostVal
+                                anchors.centerIn: parent
+                                text: Math.round(cpuBoostSlider.value) + "%"
+                                font.pixelSize: Theme.fontSizeSmall
+                                font.weight: Font.Bold
+                                color: Theme.primary
+                            }
                         }
                     }
 
@@ -568,7 +640,7 @@ PluginComponent {
 
                         StyledSlider {
                             id: gpuBoostSlider
-                            width: parent.width - 32 - 40 - Theme.spacingS * 2
+                            width: parent.width - 32 - 48 - Theme.spacingS * 2
                             from: 1; to: 100; stepSize: 1
                             value: root.gpuBoost
                             anchors.verticalCenter: parent.verticalCenter
@@ -581,12 +653,20 @@ PluginComponent {
                             }
                         }
 
-                        StyledText {
-                            text: Math.round(gpuBoostSlider.value) + "%"
-                            width: 40
-                            font.pixelSize: Theme.fontSizeSmall
-                            color: Theme.surfaceText
+                        Rectangle {
+                            height: 18
+                            width: Math.max(42, gpuBoostVal.implicitWidth + Theme.spacingS * 2)
+                            radius: 9
+                            color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.12)
                             anchors.verticalCenter: parent.verticalCenter
+                            StyledText {
+                                id: gpuBoostVal
+                                anchors.centerIn: parent
+                                text: Math.round(gpuBoostSlider.value) + "%"
+                                font.pixelSize: Theme.fontSizeSmall
+                                font.weight: Font.Bold
+                                color: Theme.primary
+                            }
                         }
                     }
                 }
@@ -609,12 +689,13 @@ PluginComponent {
 
                     Row {
                         spacing: Theme.spacingS
-                        DankIcon { name: "keyboard"; size: 16; color: Theme.primary; anchors.verticalCenter: parent.verticalCenter }
+                        Rectangle { width: 4; height: 20; radius: 2; color: Theme.secondary; anchors.verticalCenter: parent.verticalCenter }
+                        DankIcon { name: "keyboard"; size: 16; color: Theme.secondary; anchors.verticalCenter: parent.verticalCenter }
                         StyledText {
                             text: "KEYBOARD"
                             font.pixelSize: Theme.fontSizeSmall
                             font.weight: Font.Bold
-                            color: Theme.surfaceVariantText
+                            color: Theme.surfaceText
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
@@ -668,19 +749,22 @@ PluginComponent {
                                 height: 28
                                 width: kbEffLabel.implicitWidth + Theme.spacingM * 2
                                 radius: Theme.cornerRadius
-                                color: {
-                                    if (root.kbEffect === modelData.cmd) return Theme.primaryContainer
-                                    return kbEffArea.containsMouse ? Theme.surfaceContainerHigh : Theme.surfaceContainer
-                                }
+
+                                scale: kbEffArea.pressed ? 0.95 : 1.0
+                                Behavior on scale { NumberAnimation { duration: 100 } }
+
+                                color: root.kbEffect === modelData.cmd
+                                    ? Qt.rgba(Theme.secondary.r, Theme.secondary.g, Theme.secondary.b, 0.18)
+                                    : kbEffArea.containsMouse ? Theme.surfaceContainerHigh : Theme.surfaceContainer
                                 border.width: root.kbEffect === modelData.cmd ? 1 : 0
-                                border.color: Theme.primary
+                                border.color: Qt.rgba(Theme.secondary.r, Theme.secondary.g, Theme.secondary.b, 0.4)
 
                                 StyledText {
                                     id: kbEffLabel
                                     anchors.centerIn: parent
                                     text: modelData.label
                                     font.pixelSize: Theme.fontSizeSmall
-                                    color: Theme.surfaceText
+                                    color: root.kbEffect === modelData.cmd ? Theme.secondary : Theme.surfaceText
                                 }
 
                                 MouseArea {
@@ -696,6 +780,12 @@ PluginComponent {
                                         var args = needsCol ? [cmd, root.kbColor] : [cmd]
                                         root.runAwcc("kbEffect", args, () => {})
                                     }
+                                }
+
+                                DankRipple {
+                                    anchors.fill: parent
+                                    cornerRadius: Theme.cornerRadius
+                                    rippleColor: Qt.rgba(Theme.secondary.r, Theme.secondary.g, Theme.secondary.b, 0.2)
                                 }
                             }
                         }
@@ -736,12 +826,13 @@ PluginComponent {
 
                     Row {
                         spacing: Theme.spacingS
-                        DankIcon { name: "rocket_launch"; size: 16; color: Theme.primary; anchors.verticalCenter: parent.verticalCenter }
+                        Rectangle { width: 4; height: 20; radius: 2; color: Theme.secondary; anchors.verticalCenter: parent.verticalCenter }
+                        DankIcon { name: "rocket_launch"; size: 16; color: Theme.secondary; anchors.verticalCenter: parent.verticalCenter }
                         StyledText {
                             text: "TURBO"
                             font.pixelSize: Theme.fontSizeSmall
                             font.weight: Font.Bold
-                            color: Theme.surfaceVariantText
+                            color: Theme.surfaceText
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
@@ -779,5 +870,5 @@ PluginComponent {
     }
 
     popoutWidth: 420
-    popoutHeight: 560
+    popoutHeight: 640
 }
