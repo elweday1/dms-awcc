@@ -145,6 +145,41 @@ PluginComponent {
         }
     }
 
+    component StyledSlider: Slider {
+        id: sliderControl
+
+        background: Rectangle {
+            x: sliderControl.leftPadding
+            y: sliderControl.topPadding + sliderControl.availableHeight / 2 - height / 2
+            width: sliderControl.availableWidth
+            height: 4
+            radius: 2
+            color: Theme.surfaceVariant
+
+            Rectangle {
+                width: sliderControl.visualPosition * parent.width
+                height: parent.height
+                radius: 2
+                gradient: Gradient {
+                    orientation: Gradient.Horizontal
+                    GradientStop { position: 0.0; color: Theme.primary }
+                    GradientStop { position: 1.0; color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.5) }
+                }
+            }
+        }
+
+        handle: Rectangle {
+            x: sliderControl.leftPadding + sliderControl.visualPosition * (sliderControl.availableWidth - width)
+            y: sliderControl.topPadding + sliderControl.availableHeight / 2 - height / 2
+            implicitWidth: 20
+            implicitHeight: 20
+            radius: 10
+            color: "white"
+            border.color: Theme.primary
+            border.width: 2
+        }
+    }
+
     component ColorPicker: Item {
         id: picker
         height: 120
@@ -489,7 +524,7 @@ PluginComponent {
                         width: parent.width
                         spacing: Theme.spacingS
 
-                        StyledSlider {
+                        Slider {
                             id: batterySlider
                             width: parent.width - 48 - Theme.spacingS * 2
                             from: 50; to: 100; stepSize: 5
@@ -560,7 +595,7 @@ PluginComponent {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        StyledSlider {
+                        Slider {
                             id: kbBrightnessSlider
                             width: parent.width - 18 - 40 - Theme.spacingS * 2
                             from: 0; to: 100; stepSize: 1
