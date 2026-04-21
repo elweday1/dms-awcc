@@ -1,16 +1,16 @@
 {
-    "id": "awcc",
-    "name": "Alienware Command Center",
-    "description": "Control thermal modes, fan boost, keyboard lighting, light bar and turbo via awcc CLI",
-    "version": "2.0.0",
-    "author": "Lucas Mariani",
+    "id": "z13-control",
+    "name": "Z13 Control",
+    "description": "Control Alienware Z13 thermal profiles, keyboard lighting, and system status via z13ctl CLI",
+    "version": "1.0.0",
+    "author": "elweday",
     "type": "widget",
     "capabilities": [
         "dankbar-widget"
     ],
-    "component": "./AwccWidget.qml",
+    "component": "./Z13Widget.qml",
     "icon": "bolt",
-    "settings": "./AwccSettings.qml",
+    "settings": "./Z13Settings.qml",
     "permissions": [
         "settings_read",
         "settings_write",
